@@ -37,7 +37,7 @@ export function TodoItem({
       <Col className="d-flex justify-content-end">
         <Stack gap={1} direction="horizontal">
           <Button
-            onClick={() => onDeleteTodo(todo.id)}
+            onClick={() => onDeleteTodo(todo)}
             variant="light"
             className="d-flex"
           >

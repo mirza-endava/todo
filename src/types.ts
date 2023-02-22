@@ -15,7 +15,7 @@ export type SaveModalProps = {
 
 export type TodoItemProps = {
   todo: Todo;
-  onDeleteTodo: (todoId: string) => void;
+  onDeleteTodo: (todo: Todo) => void;
   onEditTodo: (todo: Todo) => void;
   onShowModal: (todo: Todo) => void;
 };

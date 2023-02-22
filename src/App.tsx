@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import {
   Badge,
   Button,
@@ -16,8 +16,38 @@ import { SaveModal } from "./SaveModal";
 import { TodoItem } from "./TodoItem";
 import { Todo } from "./types";
 
+enum ActionType {
+  ADD,
+  DELETE,
+  EDIT,
+}
+
+type Action = {
+  type: ActionType;
+  todo: Todo;
+};
+
+const todosReducer = (state: Todo[], action: Action) => {
+  switch (action.type) {
+    case ActionType.ADD:
+      return [...state, action.todo];
+    case ActionType.DELETE:
+      return state.filter((todo) => todo.id !== action.todo.id);
+    case ActionType.EDIT:
+      return state.map((todo) => {
+        if (todo.id === action.todo.id) {
+          return action.todo;
+        } else {
+          return todo;
+        }
+      });
+    default:
+      throw new Error("Missing action type");
+  }
+};
+
 function App() {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, dispatch] = useReducer(todosReducer, []);
   const [isModalShown, setIsModalShown] = useState(false);
   const defaultTodo = {
     title: "",
@@ -39,24 +69,16 @@ function App() {
       : todos;
 
   const onAddTodo = (todo: Todo) => {
-    setTodos((prev) => [...prev, todo]);
+    dispatch({ type: ActionType.ADD, todo });
     toast.success("Added TODO");
   };
 
   const onEditTodo = (todo: Todo) => {
-    setTodos((prev) => {
-      return prev.map((prevTodo) => {
-        if (prevTodo.id == todo.id) {
-          return todo;
-        } else {
-          return prevTodo;
-        }
-      });
-    });
+    dispatch({ type: ActionType.EDIT, todo });
   };
 
-  const onDeleteTodo = (todoId: string) => {
-    setTodos((prev) => prev.filter((prevTodo) => prevTodo.id !== todoId));
+  const onDeleteTodo = (todo: Todo) => {
+    dispatch({ type: ActionType.DELETE, todo });
     toast.success("Removed TODO");
   };
 
