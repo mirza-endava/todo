@@ -34,13 +34,9 @@ const todosReducer = (state: Todo[], action: Action) => {
     case ActionType.DELETE:
       return state.filter((todo) => todo.id !== action.todo.id);
     case ActionType.EDIT:
-      return state.map((todo) => {
-        if (todo.id === action.todo.id) {
-          return action.todo;
-        } else {
-          return todo;
-        }
-      });
+      return state.map((todo) =>
+        todo.id === action.todo.id ? action.todo : todo
+      );
     default:
       throw new Error("Missing action type");
   }
